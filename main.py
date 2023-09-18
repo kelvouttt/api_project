@@ -1,6 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 import googlemaps
 import os
+import orjson
 
 ### API_KEY from environment variable
 api_key = os.environ.get("API_KEY")
@@ -10,6 +11,13 @@ map_client = googlemaps.Client(api_key)
 decider = FastAPI(
     title = "Decide what to EAT"
 )
+
+class CustomORJSONResponse(Response):
+    media_type = "application/json"
+
+    def render(self, content: any) -> bytes:
+        assert orjson is not None, "orjson must be installed"
+        return orjson.dumps(content, option=orjson.OPT_INDENT_2)
 
 location_name = "Oiden"
 
@@ -21,7 +29,7 @@ def get_details(restaurant_name):
     rating = response["results"][0]["rating"]
     return {"Restaurant name": restaurant_name, "Address": address, "Open": open_now, "Rating": rating}
 
-@decider.get("/")
+@decider.get("/", response_class=CustomORJSONResponse)
 async def get_restaurant():
     return get_details(location_name)
 
