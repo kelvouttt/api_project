@@ -2,9 +2,12 @@ from fastapi import FastAPI
 import googlemaps
 import os
 
-decider = FastAPI()
-API_KEY = open('API_KEY.txt').read()
-map_client = googlemaps.Client(API_KEY)
+decider = FastAPI(
+    title = "Decide what to EAT"
+)
+
+api_key = os.environ.get("API_KEY")
+map_client = googlemaps.Client(api_key)
 
 def get_details(restaurant_name):
     response = map_client.places(query=location_name)
