@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Response
-from routes import router
+from fastapi.staticfiles import StaticFiles
+from routes import router, router2
 import googlemaps
 import os
 import orjson
@@ -13,8 +14,10 @@ decider = FastAPI(
     title = "Decide what to EAT"
 )
 
-# decider.mount("/static", StaticFiles(directory="/app/static"), name="static")
+### Mounting the main.py to a static folder which has the css configuration
+decider.mount("/static", StaticFiles(directory="static"), name="static")
 decider.include_router(router)
+decider.include_router(router2)
 
 class CustomORJSONResponse(Response):
     media_type = "application/json"
