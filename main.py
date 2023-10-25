@@ -19,14 +19,18 @@ class CustomORJSONResponse(Response):
         assert orjson is not None, "orjson must be installed"
         return orjson.dumps(content, option=orjson.OPT_INDENT_2)
 
-location_name = "Oiden"
+location_name = "dera uma"
 
 def get_details(restaurant_name):
+
     response = map_client.places(query=location_name)
-    restaurant_name = response["results"][0]["name"]
-    address = response["results"][0]["formatted_address"]
-    open_now = response["results"][0]["opening_hours"].get("open_now")
-    rating = response["results"][0]["rating"]
+
+    format = response["results"][0]
+
+    restaurant_name = format["name"]
+    address = format["formatted_address"]
+    open_now = format["opening_hours"].get("open_now")
+    rating = format["rating"]
     return {"Restaurant name": restaurant_name, "Address": address, "Open": open_now, "Rating": rating}
 
 @decider.get("/", response_class=CustomORJSONResponse)
