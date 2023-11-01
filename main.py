@@ -34,7 +34,7 @@ def get_details(restaurant_name):
     rating = format["rating"]
     return {"Restaurant name": restaurant_name, "Address": address, "Open": open_now, "Rating": rating}
 
-@decider.get("/restaurants/{restaurant_name}", response_class=CustomORJSONResponse)
+@decider.get("/restaurant/{restaurant_name}", response_class=CustomORJSONResponse)
 async def get_restaurant(restaurant_name):
     return get_details(restaurant_name)
 
