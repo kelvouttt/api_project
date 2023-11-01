@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Response
+from fastapi import Form
 import googlemaps
 import os
 import orjson
@@ -12,6 +13,7 @@ decider = FastAPI(
     title = "Decide what to EAT"
 )
 
+## Defining JSON Response object
 class CustomORJSONResponse(Response):
     media_type = "application/json"
 
@@ -19,6 +21,7 @@ class CustomORJSONResponse(Response):
         assert orjson is not None, "orjson must be installed"
         return orjson.dumps(content, option=orjson.OPT_INDENT_2)
 
+## Defining function
 def get_details(restaurant_name):
 
     response = map_client.places(query=restaurant_name)
@@ -35,6 +38,10 @@ def get_details(restaurant_name):
 async def get_restaurant(restaurant_name):
     return get_details(restaurant_name)
 
-@decider.get("/me")
-async def myself():
-    return {"hello, my name is Kelvin."}
+@decider.post("/submit/{restaurant_name}", response_class=CustomORJSONResponse)
+async def submit(Restaurant: str = Form()):
+    return get_details(Restaurant)
+
+# @decider.get("/")
+# async def myself():
+#     return {"hello, my name is Kelvin."}
