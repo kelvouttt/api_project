@@ -19,10 +19,10 @@ decider = FastAPI(
 
 ## Define desired Polygon
 # https://medium.com/the-data-journal/a-quick-trick-to-create-random-lat-long-coordinates-in-python-within-a-defined-polygon-e8997f05123a
-poly = Polygon([(-33.875319,151.204446), 
-                (-33.877457,151.204761),
-                (-33.877350,151.207542),
-                (-33.875604,151.207789)])
+poly = Polygon([(-33.822218,151.084762), 
+                (-33.919981,151.099747),
+                (-33.917772,151.240542),
+                (-33.872596, 151.262135)])
 
 ## Define the randomizer function using NumPy
 def polygon_random_points(poly, num_points):
