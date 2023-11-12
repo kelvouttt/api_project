@@ -34,18 +34,16 @@ def polygon_random_points(poly, num_points):
                             random.uniform(min_y, max_y)])
         if (random_point.within(poly)):
             points.append(random_point)
-    
+    # This function will return a list with only 1 length, the next function will split this up into coordinate x and coordinate y.
     return points
 
-## Get coordinates
+## Get coordinate x and y
 def get_coordinates():
     location = polygon_random_points(poly, 1)
-    print(location)
+    # The way it was done is by returning both coordinates.
     for coordinates in location:
-        print(coordinates.x,",",coordinates.y)
-    
-
-    return location
+        print(coordinates.x, coordinates.y)
+        return coordinates.x, coordinates.y
 
 get_coordinates()
 
@@ -61,8 +59,7 @@ class CustomORJSONResponse(Response):
 ## Defining function to parse the restaurant details
 def get_details():
 
-    response = map_client.places(type="restaurant", location={"lat": -33.8754923, "lng": 151.2052386
-    })
+    response = map_client.places(type="restaurant", location=get_coordinates())
     # print(response)
     format = response["results"][0]
 
@@ -92,5 +89,6 @@ async def get_restaurant():
 #     return {"hello, my name is Kelvin."}
 
 ## TO DO: 
-## In order to get a random location, I probably can geneate a random latitude, longitude under certain radius with the type=restaurant.
-## Need to figure out how to pass the randomized latitude and longitude as the paramaters for the location.
+## The code above is somewhat working to randomize random coordinates. 
+
+## The problem is that the coordinates being returned is longer than what Google API is taking.
