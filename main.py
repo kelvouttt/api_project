@@ -1,15 +1,30 @@
 ## Packages required
-from fastapi import FastAPI, Response
-from fastapi import Form
+from dataclasses import dataclass
+from fastapi import Depends, FastAPI, Form, Response, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+
+from pydantic import BaseModel
+from dataclasses import dataclass
+
 import orjson
 import random_points as rp
-import get_details as details
+import restaurants as details
 
+
+@dataclass
+class Restaurant:
+    name: str = Form(...)
 
 ### Initializing FastAPI as decider
 decider = FastAPI(
     title = "Decide what to EAT"
 )
+
+templates = Jinja2Templates(directory="templates")
+
+decider.mount("/static", StaticFiles(directory="static"), name="static")
 
 ## Defining JSON Response object
 class CustomORJSONResponse(Response):
@@ -23,11 +38,15 @@ class CustomORJSONResponse(Response):
 @decider.get("/restaurant/{places_to_eat}", 
              response_class=CustomORJSONResponse)
 async def get_restaurant(places_to_eat):
-    return details.get_details(places_to_eat)
+    return details.return_restaurant(places_to_eat)
 
-@decider.post("/submit/{restaurant_name}", response_class=CustomORJSONResponse)
-async def submit(Restaurant: str = Form()):
-    return details.get_details(Restaurant)
+@decider.post("/submit/", response_class=CustomORJSONResponse)
+async def submit(restaurant: Restaurant = Depends()):
+    return details.response(restaurant.name)
+
+# @decider.get("/response")
+# async def get_response(request: Request):
+#     return templates.TemplateResponse("response.html", {'request': request})
 
 @decider.get("/restaurants", 
              response_class=CustomORJSONResponse)
