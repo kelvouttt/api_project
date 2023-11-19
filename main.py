@@ -40,9 +40,23 @@ class CustomORJSONResponse(Response):
 async def get_restaurant(places_to_eat):
     return details.return_restaurant(places_to_eat)
 
-@decider.post("/submit/", response_class=CustomORJSONResponse)
-async def submit(restaurant: Restaurant = Depends()):
-    return details.response(restaurant.name)
+@decider.post("/submit/", response_class=HTMLResponse)
+async def submit(request: Request, restaurant: Restaurant = Depends()):
+    results_function = details.response(restaurant)
+    print(results_function)
+    print(results_function["Restaurant name"])
+    print(results_function.keys())
+    # x = details.response(restaurant)
+    # print(x.keys())
+    # print(x["Restaurant name"])
+    # print(x.values())
+
+    return templates.TemplateResponse("response.html", {"request": request,
+                                                        "restaurant_name": results_function["Restaurant name"],
+                                                        "address": results_function["Address"],
+                                                        "status": results_function["Open"],
+                                                        "rating": results_function["Rating"]      
+                                                        })
 
 # @decider.get("/response")
 # async def get_response(request: Request):
