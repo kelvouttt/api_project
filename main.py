@@ -9,8 +9,8 @@ from pydantic import BaseModel
 from dataclasses import dataclass
 
 import orjson
-import random_points as rp
-import restaurants as details
+import function.random_points as rp
+import function.restaurants as details
 
 
 @dataclass
