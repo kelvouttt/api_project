@@ -5,7 +5,10 @@ from function import get_coordinates as gc
 
 ### API_KEY from environment variable
 api_key = os.environ.get("API_KEY")
+static_api_key = os.environ.get("API_KEY_STATIC")
+
 map_client = googlemaps.Client(api_key)
+static_map_client = googlemaps.Client(static_api_key)
 
 ## Defining function to parse the restaurant details
 def get_details():
