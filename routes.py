@@ -56,12 +56,15 @@ async def get_restaurant():
              response_class=HTMLResponse)
 async def get_restaurant(request: Request):
     random_restaurant: dict = details.get_details()
-    
+
+    static_api = details.static_api_key
+
     return templates.TemplateResponse("response.html", {"request": request,
                                                         "restaurant_name": random_restaurant["Restaurant name"],
                                                         "address": random_restaurant["Address"],
                                                         "status": random_restaurant["Open"],
-                                                        "rating": random_restaurant["Rating"]      
+                                                        "rating": random_restaurant["Rating"],
+                                                        "static_api": static_api     
                                                         })
 
 # @decider.get("/")
