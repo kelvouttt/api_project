@@ -34,22 +34,18 @@ class CustomORJSONResponse(Response):
         assert orjson is not None, "orjson must be installed"
         return orjson.dumps(content, option=orjson.OPT_INDENT_2)
 
-## Routes
+### Routes
+
+## Will return whatever places we pass into the query parameters
 @decider.get("/restaurant/{places_to_eat}", 
              response_class=CustomORJSONResponse)
 async def get_restaurant(places_to_eat):
-    return details.return_restaurant(places_to_eat)
+    return details.return_restaurant(places_to_eat)  
 
+## We can submit a form, and it will return place details we put in
 @decider.post("/submit/", response_class=HTMLResponse)
 async def submit(request: Request, restaurant: Restaurant = Depends()):
-    results_function = details.response(restaurant)
-    print(results_function)
-    print(results_function["Restaurant name"])
-    print(results_function.keys())
-    # x = details.response(restaurant)
-    # print(x.keys())
-    # print(x["Restaurant name"])
-    # print(x.values())
+    results_function: dict = details.response(restaurant)
 
     return templates.TemplateResponse("response.html", {"request": request,
                                                         "restaurant_name": results_function["Restaurant name"],
@@ -58,20 +54,25 @@ async def submit(request: Request, restaurant: Restaurant = Depends()):
                                                         "rating": results_function["Rating"]      
                                                         })
 
-# @decider.get("/response")
-# async def get_response(request: Request):
-#     return templates.TemplateResponse("response.html", {'request': request})
-
-@decider.get("/restaurants", 
+## Will get new restaurants every refresh but response is in JSON format
+@decider.get("/restaurantsJSON", 
              response_class=CustomORJSONResponse)
 async def get_restaurant():
     return details.get_details()
 
+## Return restaurants every refresh and response in HTMl page
+@decider.get("/restaurants", 
+             response_class=HTMLResponse)
+async def get_restaurant(request: Request):
+    random: dict = details.get_details()
+
+    return templates.TemplateResponse("response.html", {"request": request,
+                                                        "restaurant_name": random["Restaurant name"],
+                                                        "address": random["Address"],
+                                                        "status": random["Open"],
+                                                        "rating": random["Rating"]      
+                                                        })
+
 # @decider.get("/")
 # async def myself():
 #     return {"hello, my name is Kelvin."}
-
-## TO DO: 
-## The code above is somewhat working to randomize random coordinates. 
-
-## The problem is that the coordinates being returned is longer than what Google API is taking.
