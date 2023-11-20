@@ -14,7 +14,17 @@
             <p>Rating: {{ rating }} </p>
 
             <form method="post" action="/restaurants/">
-                <button type="submit">Click!</button>
+                <button type="submit">Randomize!</button>
             </form>
+            <iframe 
+                width="750"
+                height="450"
+                zoom="15"
+                style="border:2px solid red"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                src="https://www.google.com/maps/embed/v1/place?key={{ static_api }}&q={{ restaurant_name }}"
+                allowfullscreen>
+            </iframe>
         </body>
 </html>
