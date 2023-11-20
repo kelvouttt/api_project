@@ -61,16 +61,16 @@ async def get_restaurant():
     return details.get_details()
 
 ## Return restaurants every refresh and response in HTMl page
-@decider.get("/restaurants", 
+@decider.post("/restaurants", 
              response_class=HTMLResponse)
 async def get_restaurant(request: Request):
-    random: dict = details.get_details()
+    random_restaurant: dict = details.get_details()
 
     return templates.TemplateResponse("response.html", {"request": request,
-                                                        "restaurant_name": random["Restaurant name"],
-                                                        "address": random["Address"],
-                                                        "status": random["Open"],
-                                                        "rating": random["Rating"]      
+                                                        "restaurant_name": random_restaurant["Restaurant name"],
+                                                        "address": random_restaurant["Address"],
+                                                        "status": random_restaurant["Open"],
+                                                        "rating": random_restaurant["Rating"]      
                                                         })
 
 # @decider.get("/")
