@@ -76,6 +76,7 @@ async def get_restaurant(request: Request):
                                                         "static_api": static_api     
                                                         })
 
+# Right now, I am using Annotated and form feature from FastAPI to make the post request work - I have tried creating the class Postal as above, but it didn't work as the error seems to be pointing to a validation error where required fields are missing (although I'm not sure what's really missing)
 @decider.post("/postalcode/", 
               response_class=HTMLResponse)
 async def submit_form(request: Request, postalcode: Annotated[int, Form()]):
