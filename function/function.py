@@ -51,7 +51,9 @@ def input_response(postcode: int):
     response = static_map_client.geocode(components={
                                         "country": "AU","postal_code":postcode})
     format = response[0]
- 
+
     address = format["formatted_address"]
+    lat = format["geometry"]["location"]["lat"]
+    lng = format["geometry"]["location"]["lng"]
     
-    return {"Address": address}
+    return {"Address": address, "Latitude": lat, "Longitude": lng}
