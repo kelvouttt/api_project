@@ -81,9 +81,11 @@ async def get_restaurant(request: Request):
               response_class=HTMLResponse)
 async def submit_form(request: Request, postalcode: Annotated[int, Form()]):
     function_result: dict = details.input_response(postalcode)
-    print(function_result["Address"])
+    print(function_result)
     return templates.TemplateResponse("postal_response.html", {"request": request,
-                                                            "address": function_result["Address"]    
+                                                            "address": function_result["Address"],
+                                                            "latitude": function_result["Latitude"], 
+                                                            "longitude": function_result["Longitude"]
                                                             })
 
 
