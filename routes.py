@@ -81,6 +81,7 @@ async def get_restaurant(request: Request):
 async def get_restaurant(postcode):
     return details.get_place_from_postcode(postcode)
 
+## This code should be the baseline - improvement needed to randomize places within certain postal code
 @decider.post("/postalcode/", 
               response_class=HTMLResponse)
 async def submit_form(request: Request, postalcode: Annotated[int, Form()]):
