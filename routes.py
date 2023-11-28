@@ -76,23 +76,40 @@ async def get_restaurant(request: Request):
                                                         "static_api": static_api     
                                                         })
 
-# Right now, I am using Annotated and form feature from FastAPI to make the post request work - I have tried creating the class Postal as above, but it didn't work as the error seems to be pointing to a validation error where required fields are missing (although I'm not sure what's really missing)
-@decider.post("/postalcode/", 
-              response_class=HTMLResponse)
-async def submit_form(request: Request, postalcode: Annotated[int, Form()]):
-    function_result: dict = details.input_response(postalcode)
-    print(function_result)
-    return templates.TemplateResponse("postal_response.html", {"request": request,
-                                                            "address": function_result["Address"],
-                                                            "latitude": function_result["Latitude"], 
-                                                            "longitude": function_result["Longitude"]
-                                                            })
-
-
 @decider.get("/postal/{postcode}", 
              response_class=CustomORJSONResponse)
 async def get_restaurant(postcode):
-    return details.input_response(postcode)  
+    return details.get_place_from_postcode(postcode)
+
+@decider.post("/postalcode/", 
+              response_class=HTMLResponse)
+async def submit_form(request: Request, postalcode: Annotated[int, Form()]):
+    function_result: dict = details.get_place_from_postcode(postalcode)
+    print(function_result)
+    return templates.TemplateResponse("postal_response.html", {"request": request,
+                                                            "restaurant_name": function_result["Restaurant name"],
+                                                            "address": function_result["Address"], 
+                                                            "status": function_result["Open"],
+                                                            "rating": function_result["Rating"]
+                                                            }) 
+
+# Right now, I am using Annotated and form feature from FastAPI to make the post request work - I have tried creating the class Postal as above, but it didn't work as the error seems to be pointing to a validation error where required fields are missing (although I'm not sure what's really missing)
+# @decider.post("/postalcode/", 
+#               response_class=HTMLResponse)
+# async def submit_form(request: Request, postalcode: Annotated[int, Form()]):
+#     function_result: dict = details.input_response(postalcode)
+#     print(function_result)
+#     return templates.TemplateResponse("postal_response.html", {"request": request,
+#                                                             "address": function_result["Address"],
+#                                                             "latitude": function_result["Latitude"], 
+#                                                             "longitude": function_result["Longitude"]
+#                                                             })
+
+
+# @decider.get("/postal/{postcode}", 
+#              response_class=CustomORJSONResponse)
+# async def get_restaurant(postcode):
+#     return details.input_response(postcode)  
  
 # @decider.get("/")
 # async def myself():
