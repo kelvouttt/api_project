@@ -9,5 +9,14 @@
         <body>
             <h1>Let's eat here!</h1>
             <p>Address: {{ address }}</p>
+            <p>Latitude: {{ latitude }}</p>
+            <p>Longitude: {{ longitude }}</p>
+
+            <h3>Search again</h3>
+            <form method="post" action="/postalcode/">
+                <label for="name">Postcode:</label><br>
+                <input type="text" id="postalcode" name="postalcode"><br>
+                <input type="submit" value="Click">
+            </form>
         </body>
 </html>
