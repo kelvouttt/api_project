@@ -18,12 +18,6 @@ templates = Jinja2Templates(directory="templates")
 class Restaurant:
     name: str = Form(...)
 
-# Creating a new class for postal code post request, for some reason, I can't instantiate new object using the existing class Restaurant. So as a workaround, will try to create new object instead to make it work.
-# @dataclass 
-# class Postal:
-#     postcode: int = Form(...)
-
-
 ## Defining JSON Response object
 class CustomORJSONResponse(Response):
     media_type = "application/json"
@@ -38,13 +32,13 @@ class CustomORJSONResponse(Response):
 @decider.get("/restaurant/{places_to_eat}", 
              response_class=CustomORJSONResponse)
 async def get_restaurant(places_to_eat):
-    return details.return_restaurant(places_to_eat) 
+    return details.get_restaurant_by_name(places_to_eat) 
 
 ## We can submit a form, and it will return place details we put in
 @decider.post("/submit/", 
               response_class=HTMLResponse)
 async def submit(request: Request, restaurant: Restaurant = Depends()):
-    results_function: dict = details.response(restaurant)
+    results_function: dict = details.get_restaurant_by_name(restaurant)
 
     return templates.TemplateResponse("submit_response.html", {"request": request,
                                                                 "restaurant_name": results_function["Restaurant name"],
@@ -57,13 +51,13 @@ async def submit(request: Request, restaurant: Restaurant = Depends()):
 @decider.get("/restaurantsJSON", 
              response_class=CustomORJSONResponse)
 async def get_restaurant():
-    return details.get_details()
+    return details.get_restaurant_randomized()
 
 ## Return restaurants every refresh and response in HTMl page
 @decider.post("/restaurants/", 
              response_class=HTMLResponse)
 async def get_restaurant(request: Request):
-    random_restaurant: dict = details.get_details()
+    random_restaurant: dict = details.get_restaurant_randomized()
 
     static_api = details.static_api_key
 
@@ -79,39 +73,17 @@ async def get_restaurant(request: Request):
 @decider.get("/postal/{postcode}", 
              response_class=CustomORJSONResponse)
 async def get_restaurant(postcode):
-    return details.get_place_from_postcode(postcode)
+    return details.get_restaurant_from_postcode(postcode)
 
 ## This code should be the baseline - improvement needed to randomize places within certain postal code
 @decider.post("/postalcode/", 
               response_class=HTMLResponse)
 async def submit_form(request: Request, postalcode: Annotated[int, Form()]):
-    function_result: dict = details.get_place_from_postcode(postalcode)
-    print(function_result)
+    function_result: dict = details.get_restaurant_from_postcode(postalcode)
+    
     return templates.TemplateResponse("postal_response.html", {"request": request,
                                                             "restaurant_name": function_result["Restaurant name"],
                                                             "address": function_result["Address"], 
                                                             "status": function_result["Open"],
                                                             "rating": function_result["Rating"]
                                                             }) 
-
-# Right now, I am using Annotated and form feature from FastAPI to make the post request work - I have tried creating the class Postal as above, but it didn't work as the error seems to be pointing to a validation error where required fields are missing (although I'm not sure what's really missing)
-# @decider.post("/postalcode/", 
-#               response_class=HTMLResponse)
-# async def submit_form(request: Request, postalcode: Annotated[int, Form()]):
-#     function_result: dict = details.input_response(postalcode)
-#     print(function_result)
-#     return templates.TemplateResponse("postal_response.html", {"request": request,
-#                                                             "address": function_result["Address"],
-#                                                             "latitude": function_result["Latitude"], 
-#                                                             "longitude": function_result["Longitude"]
-#                                                             })
-
-
-# @decider.get("/postal/{postcode}", 
-#              response_class=CustomORJSONResponse)
-# async def get_restaurant(postcode):
-#     return details.input_response(postcode)  
- 
-# @decider.get("/")
-# async def myself():
-#     return {"hello, my name is Kelvin."}
