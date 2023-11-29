@@ -11,7 +11,7 @@ map_client = googlemaps.Client(api_key)
 static_map_client = googlemaps.Client(static_api_key)
 
 ## Defining function to parse the restaurant details
-def get_details():
+def get_restaurant_randomized():
 
     response = map_client.places(type="restaurant", location=gc.get_coordinates())
     format = response["results"][0]
@@ -23,19 +23,7 @@ def get_details():
     location = format["geometry"]
     return {"Restaurant name": restaurant_name, "Address": address, "Open": open_now, "Rating": rating, "Location": location}
 
-def return_restaurant(restaurant_name):
-
-    response = map_client.places(query=restaurant_name)
-
-    format = response["results"][0]
-
-    restaurant_name = format["name"]
-    address = format["formatted_address"]
-    open_now = format["opening_hours"].get("open_now")
-    rating = format["rating"]
-    return {"Restaurant name": restaurant_name, "Address": address, "Open": open_now, "Rating": rating}
-
-def response(restaurant_name: str):
+def get_restaurant_by_name(restaurant_name: str):
     response = map_client.places(query=restaurant_name)
 
     format = response["results"][0]
@@ -63,7 +51,7 @@ def input_response(postcode: int):
 ## This function will get the input from user in a form of postcode, the postcode will be the argument for the function input_response which takes a postal code and transform it into a latitude / longitude. 
 
 ## The lat / lng will be the argument for the location parameter in the .places() function. 
-def get_place_from_postcode(postcode: int):
+def get_restaurant_from_postcode(postcode: int):
     response = map_client.places(type="restaurant", location=input_response(postcode), radius=10000)
 
     format = response["results"][0]
@@ -72,5 +60,5 @@ def get_place_from_postcode(postcode: int):
     address = format["formatted_address"]
     open_now = format["opening_hours"].get("open_now")
     rating = format["rating"]
-    print(response)
+    
     return {"Restaurant name": restaurant_name, "Address": address, "Open": open_now, "Rating": rating}
